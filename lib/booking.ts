@@ -1,17 +1,17 @@
 'use server'
 
 import { db } from '@/db'
-import { blogTable } from '@/db/schema'
+import { bookingTable } from '@/db/schema'
 import { eq } from 'drizzle-orm'
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 
 export async function getBooking() {
-  return await db.select().from(blogTable)
+  return await db.select().from(bookingTable)
 }
 
 export async function addBooking(form: FormData) {
-  await db.insert(blogTable).values({
+  await db.insert(bookingTable).values({
     name: String(form.get('name')),
     phone: String(form.get('phone')),
     people: String(form.get('people')),
@@ -23,7 +23,7 @@ export async function addBooking(form: FormData) {
 
 export async function editBooking(form: FormData) {
   await db
-    .update(blogTable)
+    .update(bookingTable)
     .set({
       name: String(form.get('name')),
       phone: String(form.get('phone')),
@@ -31,7 +31,7 @@ export async function editBooking(form: FormData) {
       hour: String(form.get('hour')),
       done: form.get('done') === 'on',
     })
-    .where(eq(blogTable.id, String(form.get('id'))))
+    .where(eq(bookingTable.id, String(form.get('id'))))
   redirect((await headers()).get('referer') ?? '/')
 }
 
@@ -39,7 +39,7 @@ export async function removeBooking(formData: FormData) {
   const id = formData.get("id") as string;
   if (!id) throw new Error("Missing id");
 
-  await db.delete(blogTable).where(eq(blogTable.id, id));
+  await db.delete(bookingTable).where(eq(bookingTable.id, id));
 
   redirect((await headers()).get("referer") ?? "/");
 }
